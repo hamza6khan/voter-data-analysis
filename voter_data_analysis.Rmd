@@ -1,0 +1,307 @@
+---
+title: "Voter Data Analysis"
+author: "Hamza Khan"
+date: "2023-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Importing libraries
+```{r warning=FALSE}
+library(tidyverse)
+library(ggchicklet) # for pretty bar graphs
+```
+
+Setting working directory and reading file
+```{r warning=FALSE}
+setwd("C:/Users/Hamza/OneDrive - University of North Carolina at Chapel Hill/Documents/SP2023/POLI 281/Final")
+CES20 <- read_csv("CES20.csv")
+```
+
+Keeping needed columns and renaming some of them
+```{r warning=FALSE}
+CES <- select(CES20,
+              faminc_new,
+              CC20_402a,
+              CC20_433b,
+              race,
+              educ,
+              gender)
+
+colnames(CES)[1] <- "income"
+colnames(CES)[2] <- "no_vote"
+colnames(CES)[3] <- "partisanship"
+```
+
+Filtering income and converting income from being continous variable to a categorical variable
+```{r warning=FALSE}
+CES_income <- filter(CES, income != 97)
+CES$inc_range <- NA
+for(i in 1:nrow(CES)){
+  if (is.na(CES$income[i])){
+    CES$inc_range[i] = "NA"
+  }
+  else if (CES$income[i] == 1){
+    CES$inc_range[i] = "Less than $10,000"
+  }
+  else if (CES$income[i] == 2){
+    CES$inc_range[i] = "$10,000 - $19,999"
+  }
+  else if (CES$income[i] == 3){
+    CES$inc_range[i] = "$20,000 - $29,999"
+  }
+  else if (CES$income[i] == 4){
+    CES$inc_range[i] = "$30,000 - $39,999"
+  }
+  else if (CES$income[i] == 5){
+    CES$inc_range[i] = "$40,000 - $49,999"
+  }
+  else if (CES$income[i] == 6){
+    CES$inc_range[i] = "$50,000 - $59,999"
+  }
+  else if (CES$income[i] == 7){
+    CES$inc_range[i] = "$60,000 - $69,999"
+  }
+  else if (CES$income[i] == 8){
+    CES$inc_range[i] = "$70,000 - $79,999"
+  }
+  else if (CES$income[i] == 9){
+    CES$inc_range[i] = "$80,000 - $99,999"
+  }
+  else if (CES$income[i] == 10){
+    CES$inc_range[i] = "$100,000 - $119,999"
+  }
+  else if (CES$income[i] == 11){
+    CES$inc_range[i] = "$120,000 - $149,999"
+  }
+  else if (CES$income[i] == 12){
+    CES$inc_range[i] = "$150,000 - $199,999"
+  }
+  else if (CES$income[i] == 13){
+    CES$inc_range[i] = "$200,000 - $249,999"
+  }
+  else if (CES$income[i] == 14){
+    CES$inc_range[i] = "$250,000 - $349,999"
+  }
+  else if (CES$income[i] == 15){
+    CES$inc_range[i] = "$350,000 - $499,999"
+  }
+  else if (CES$income[i] == 16){
+    CES$inc_range[i] = "$500,000 or more"
+  }
+  else if (CES$income[i] == 97){
+    CES$inc_range[i] = "Prefer not to say"
+  }
+}
+
+```
+
+Factorizing inc_range and grouping it 
+```{r warning=FALSE}
+CES$inc_range <- factor(CES$inc_range, levels=c(
+  "Less than $10,000", "$10,000 - $19,999", "$20,000 - $29,999", "$30,000 - $39,999", "$40,000 - $49,999", "$50,000 - $59,999",
+  "$60,000 - $69,999", "$70,000 - $79,999", "$80,000 - $99,999", "$100,000 - $119,999", "$120,000 - $149,999", "$150,000 - $199,999",
+  "$200,000 - $249,999", "$250,000 - $349,999", "$350,000 - $499,999", "$500,000 or more", "Prefer not to say"))
+
+CES_income_grouped = CES %>%
+  group_by(inc_range) %>%
+  summarize(inc_count = n())
+```
+
+
+```{r warning=FALSE}
+ggplot(data = CES_income_grouped, aes(inc_range, inc_count), !is.na(income)) +
+  #geom_bar() +
+  geom_chicklet() +
+  xlab("Income Level") +
+  ylab("Count") +
+  theme_bw() +
+  ggtitle("Distribution of Income") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  coord_flip()
+```
+
+Filtering no_vote, recoding values and summarizing
+```{r warning=FALSE}
+CES_no_vote <- filter(CES, no_vote != 55)
+
+for(i in 1:nrow(CES)) {
+  if (is.na(CES$no_vote[i])){
+    CES$no_vote[i] = "NA"
+  }
+  else if (CES$no_vote[i] == 1){
+    CES$no_vote[i] = "Forgot"
+  }
+  else if (CES$no_vote[i] == 2){
+    CES$no_vote[i] = "Not interested"
+  }
+  else if (CES$no_vote[i] == 3){
+    CES$no_vote[i] = "Too busy"
+  }
+  else if (CES$no_vote[i] == 4){
+    CES$no_vote[i] = "Did not like candidates"
+  }
+  else if (CES$no_vote[i] == 5){
+    CES$no_vote[i] = "Not Registered"
+  }
+  else if (CES$no_vote[i] == 6){
+    CES$no_vote[i] = "Wrong form of ID"
+  }
+  else if (CES$no_vote[i] == 7){
+    CES$no_vote[i] = "Out of town"
+  }
+  else if (CES$no_vote[i] == 8){
+    CES$no_vote[i] = "Sick or disabled"
+  }
+  else if (CES$no_vote[i] == 9){
+    CES$no_vote[i] = "Transportation"
+  }
+  else if (CES$no_vote[i] == 10){
+    CES$no_vote[i] = "Bad weather"
+  }
+  else if (CES$no_vote[i] == 11){
+    CES$no_vote[i] = "Line too long"
+  }
+  else if (CES$no_vote[i] == 12){
+    CES$no_vote[i] = "Not allowed to vote"
+  }
+  else if (CES$no_vote[i] == 13){
+    CES$no_vote[i] = "Didn't receive absentee ballot"
+  }
+  else if (CES$no_vote[i] == 14){
+    CES$no_vote[i] = "Unsure of location"
+  }
+  else if (CES$no_vote[i] == 15){
+    CES$no_vote[i] = "Lack of info on candidates"
+  }
+  else if (CES$no_vote[i] == 16){
+    CES$no_vote[i] = "Fear of COVID Exposure"
+  }
+  else if (CES$no_vote[i] == 17){
+    CES$no_vote[i] = "Other"
+  }
+  else if (CES$no_vote[i] == 55){
+    CES$no_vote[i] = "Don't know"
+  } 
+}
+
+CES_no_vote_grouped = CES_no_vote %>%
+  group_by(no_vote) %>%
+  summarize(no_vote_count = n())
+```
+
+
+```{r warning=FALSE}
+ggplot(data = CES_no_vote_grouped, aes(no_vote, no_vote_count), !is.na(no_vote)) +
+  #geom_bar() +
+  geom_chicklet() +
+  xlab("Reason for Not Voting") +
+  ylab("Count") +
+  coord_flip() +
+  #theme_bw() +
+  ggtitle("Distribution of reasons for not voting") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Creating a column named income_barrier as a binary variable based off of no_vote
+```{r warning=FALSE}
+CES$income_barrier <- NA
+for(i in 1:nrow(CES)) {
+  if (CES$no_vote[i] %in% c("Too busy", "Not Registered", "Wrong form of ID", "Sick or disabled", "Transportation", "Line too long")) {
+    CES$income_barrier[i] = 1
+  } else {
+    CES$income_barrier[i] = 0
+  }
+}
+```
+
+Grouping by inc_range
+```{r warning=FALSE}
+income_by_reason <- CES %>%
+  filter(inc_range != "Prefer not to say") %>%
+  group_by(inc_range) %>%
+  summarise(avg_barrier = mean(income_barrier))
+
+new_inc_by_res = CES %>%
+  filter(no_vote %in% c(
+    "Too busy", "Not Registered", "Wrong form of ID", "Sick or disabled", "Transportation", "Line too long")) %>%
+  filter(inc_range != "Prefer not to say") %>%
+  group_by(inc_range) 
+```
+
+
+```{r warning=FALSE}
+ggplot(data = income_by_reason, aes(x = inc_range, y = avg_barrier), !is.na(income)) +
+  #geom_col()+
+  geom_chicklet() +
+  xlab("Level of Income") +
+  ylab("Average Voting Barrier") +
+  ggtitle("Voting Barriers by Income Level") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  coord_flip()
+```
+
+
+```{r warning=FALSE}
+ggplot(data = new_inc_by_res, aes(x = inc_range, fill = no_vote), !is.na(income)) +
+  geom_bar() +
+  #geom_chicklet() +
+  xlab("Level of Income") +
+  ylab("Average Voting Barrier") +
+  theme_bw() +
+  ggtitle("Voting Barriers by Income Level") +  
+  theme(plot.title = element_text(hjust = 0.5)) +
+  coord_flip() +
+  labs(fill = "Barrier")
+```
+
+Initial linear model
+```{r warning=FALSE}
+fit1 <- lm(CES$income_barrier ~ CES$income)
+summary(fit1)
+nobs(fit1)
+```
+
+Prep work for confounders. Grouping
+```{r warning=FALSE}
+CES$white <- ifelse(CES$race == 1, 1,0)
+CES$educated <- ifelse(CES$educ >= 5, 1,0)
+CES$male <- ifelse(CES$gender == 1, 1,0)
+CES$democrat <- ifelse(CES$partisanship == 1, 1,0)
+
+cor(CES$income, CES$white, "complete.obs")
+cor(CES$income, CES$educated, "complete.obs")
+cor(CES$income, CES$male, "complete.obs")
+cor(CES$income, CES$democrat, "complete.obs")
+
+# cor(CES$no_vote, CES$white, "complete.obs")
+# cor(CES$no_vote, CES$educated, "complete.obs")
+# cor(CES$no_vote, CES$male, "complete.obs")
+# cor(CES$no_vote, CES$income, "complete.obs")
+# cor(CES$no_vote, CES$democrat, "complete.obs")
+
+
+inc_inc_bar = CES %>%
+  group_by(race, income_barrier) %>%
+  summarize(counta = count(CES, income_barrier))
+
+```
+
+More linear models
+```{r warning=FALSE}
+fit1 <- lm(CES$income_barrier ~ CES$income)
+summary(fit1)
+nobs(fit1)
+
+fit2 <- lm(CES$income_barrier ~ CES$income + CES$educated)
+summary(fit2)
+nobs(fit2)
+
+fit3 <- lm(CES$income_barrier ~ CES$income + CES$educated + CES$male + CES$white)
+summary(fit3)
+nobs(fit3)
+```
+
