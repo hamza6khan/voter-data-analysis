@@ -114,7 +114,7 @@ CES_income_grouped = CES %>%
 
 ```{r warning=FALSE}
 ggplot(data = CES_income_grouped, aes(inc_range, inc_count), !is.na(income)) +
-  #geom_bar() +
+  # geom_bar() +
   geom_chicklet() +
   xlab("Income Level") +
   ylab("Count") +
@@ -122,88 +122,91 @@ ggplot(data = CES_income_grouped, aes(inc_range, inc_count), !is.na(income)) +
   ggtitle("Distribution of Income") +
   theme(plot.title = element_text(hjust = 0.5)) +
   coord_flip()
+# ggsave("income_dist.jpg")
 ```
 
 Filtering no_vote, recoding values and summarizing
 ```{r warning=FALSE}
 CES_no_vote <- filter(CES, no_vote != 55)
 
-for(i in 1:nrow(CES)) {
-  if (is.na(CES$no_vote[i])){
-    CES$no_vote[i] = "NA"
+for(i in 1:nrow(CES_no_vote)) {
+  if (is.na(CES_no_vote$no_vote[i])){
+    CES_no_vote$CES_no_vote[i] = "NA"
   }
-  else if (CES$no_vote[i] == 1){
-    CES$no_vote[i] = "Forgot"
+  else if (CES_no_vote$no_vote[i] == 1){
+    CES_no_vote$no_vote[i] = "Forgot"
   }
-  else if (CES$no_vote[i] == 2){
-    CES$no_vote[i] = "Not interested"
+  else if (CES_no_vote$no_vote[i] == 2){
+    CES_no_vote$no_vote[i] = "Not interested"
   }
-  else if (CES$no_vote[i] == 3){
-    CES$no_vote[i] = "Too busy"
+  else if (CES_no_vote$no_vote[i] == 3){
+    CES_no_vote$no_vote[i] = "Too busy"
   }
-  else if (CES$no_vote[i] == 4){
-    CES$no_vote[i] = "Did not like candidates"
+  else if (CES_no_vote$no_vote[i] == 4){
+    CES_no_vote$no_vote[i] = "Did not like candidates"
   }
-  else if (CES$no_vote[i] == 5){
-    CES$no_vote[i] = "Not Registered"
+  else if (CES_no_vote$no_vote[i] == 5){
+    CES_no_vote$no_vote[i] = "Not Registered"
   }
-  else if (CES$no_vote[i] == 6){
-    CES$no_vote[i] = "Wrong form of ID"
+  else if (CES_no_vote$no_vote[i] == 6){
+    CES_no_vote$no_vote[i] = "Wrong form of ID"
   }
-  else if (CES$no_vote[i] == 7){
-    CES$no_vote[i] = "Out of town"
+  else if (CES_no_vote$no_vote[i] == 7){
+    CES_no_vote$no_vote[i] = "Out of town"
   }
-  else if (CES$no_vote[i] == 8){
-    CES$no_vote[i] = "Sick or disabled"
+  else if (CES_no_vote$no_vote[i] == 8){
+    CES_no_vote$no_vote[i] = "Sick or disabled"
   }
-  else if (CES$no_vote[i] == 9){
-    CES$no_vote[i] = "Transportation"
+  else if (CES_no_vote$no_vote[i] == 9){
+    CES_no_vote$no_vote[i] = "Transportation"
   }
-  else if (CES$no_vote[i] == 10){
-    CES$no_vote[i] = "Bad weather"
+  else if (CES_no_vote$no_vote[i] == 10){
+    CES_no_vote$no_vote[i] = "Bad weather"
   }
-  else if (CES$no_vote[i] == 11){
-    CES$no_vote[i] = "Line too long"
+  else if (CES_no_vote$no_vote[i] == 11){
+    CES_no_vote$no_vote[i] = "Line too long"
   }
-  else if (CES$no_vote[i] == 12){
-    CES$no_vote[i] = "Not allowed to vote"
+  else if (CES_no_vote$no_vote[i] == 12){
+    CES_no_vote$no_vote[i] = "Not allowed to vote"
   }
-  else if (CES$no_vote[i] == 13){
-    CES$no_vote[i] = "Didn't receive absentee ballot"
+  else if (CES_no_vote$no_vote[i] == 13){
+    CES_no_vote$no_vote[i] = "Didn't receive absentee ballot"
   }
-  else if (CES$no_vote[i] == 14){
-    CES$no_vote[i] = "Unsure of location"
+  else if (CES_no_vote$no_vote[i] == 14){
+    CES_no_vote$no_vote[i] = "Unsure of location"
   }
-  else if (CES$no_vote[i] == 15){
-    CES$no_vote[i] = "Lack of info on candidates"
+  else if (CES_no_vote$no_vote[i] == 15){
+    CES_no_vote$no_vote[i] = "Lack of info on candidates"
   }
-  else if (CES$no_vote[i] == 16){
-    CES$no_vote[i] = "Fear of COVID Exposure"
+  else if (CES_no_vote$no_vote[i] == 16){
+    CES_no_vote$no_vote[i] = "Fear of COVID Exposure"
   }
-  else if (CES$no_vote[i] == 17){
-    CES$no_vote[i] = "Other"
+  else if (CES_no_vote$no_vote[i] == 17){
+    CES_no_vote$no_vote[i] = "Other"
   }
-  else if (CES$no_vote[i] == 55){
-    CES$no_vote[i] = "Don't know"
+  else if (CES_no_vote$no_vote[i] == 55){
+    CES_no_vote$no_vote[i] = "Don't know"
   } 
 }
 
 CES_no_vote_grouped = CES_no_vote %>%
   group_by(no_vote) %>%
-  summarize(no_vote_count = n())
+  summarize(no_vote_count = n()) %>% 
+  filter(no_vote != "NA")
 ```
 
 
 ```{r warning=FALSE}
-ggplot(data = CES_no_vote_grouped, aes(no_vote, no_vote_count), !is.na(no_vote)) +
-  #geom_bar() +
+ggplot(data = CES_no_vote_grouped, aes(reorder(no_vote, no_vote_count), no_vote_count), !is.na(no_vote)) +
+  # geom_bar() +
   geom_chicklet() +
   xlab("Reason for Not Voting") +
   ylab("Count") +
   coord_flip() +
-  #theme_bw() +
+  # theme_bw() +
   ggtitle("Distribution of reasons for not voting") +
   theme(plot.title = element_text(hjust = 0.5))
+# ggsave("dist_no_vote.jpg")
 ```
 
 Creating a column named income_barrier as a binary variable based off of no_vote
@@ -235,20 +238,21 @@ new_inc_by_res = CES %>%
 
 ```{r warning=FALSE}
 ggplot(data = income_by_reason, aes(x = inc_range, y = avg_barrier), !is.na(income)) +
-  #geom_col()+
+  # geom_col()+
   geom_chicklet() +
   xlab("Level of Income") +
   ylab("Average Voting Barrier") +
   ggtitle("Voting Barriers by Income Level") + 
   theme(plot.title = element_text(hjust = 0.5)) +
   coord_flip()
+# ggsave("avg_barrier_inc_level.jpg")
 ```
 
 
 ```{r warning=FALSE}
 ggplot(data = new_inc_by_res, aes(x = inc_range, fill = no_vote), !is.na(income)) +
   geom_bar() +
-  #geom_chicklet() +
+  # geom_chicklet() +
   xlab("Level of Income") +
   ylab("Average Voting Barrier") +
   theme_bw() +
@@ -256,6 +260,7 @@ ggplot(data = new_inc_by_res, aes(x = inc_range, fill = no_vote), !is.na(income)
   theme(plot.title = element_text(hjust = 0.5)) +
   coord_flip() +
   labs(fill = "Barrier")
+# ggsave("barrier_inc_level.jpg")
 ```
 
 Initial linear model
