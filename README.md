@@ -14,8 +14,10 @@ We utilized data from [Cooperative Election Study](https://dataverse.harvard.edu
 We were not allowed to use logistic regressions as it was outside the scope of the project. 
 
 ## Conclusions
-We found that there is a relationship between income level and reasons for not voting. Those with higher self-reported incomes were less likely to face voting barriers than respondents with lower self-reported incomes. Lack of voter registration is a significant barrier to voting for respondents with lower incomes. This might be because lower-income individuals do not have the luxury of time to take off work to go register to vote.
+We observed a correlation between income levels and reasons for not voting, where individuals with higher self-reported incomes were less likely to face voting barriers when compared to respondents with lower self-reported incomes. The lack of voter registration emerged as a significant impediment for those with lower incomes, potentially because lower-income individuals do not have the luxury of time to take off work to go register to vote.
 
-We have identified a correlation between income levels and the underlying reasons for abstaining from voting. Individuals with higher self-reported incomes demonstrated a reduced likelihood of encountering obstacles to voting compared to respondents with lower self-reported incomes. Notably, the absence of voter registration emerged as a noteworthy impediment for those with lower incomes. This phenomenon could be attributed to the constrained time available to individuals with lower incomes, who may find it challenging to take time off from work to complete the voter registration process.
+The bar charts from our EDA visualize just that:
 
-We observed a correlation between income levels and reasons for not voting, where individuals with higher self-reported incomes were notably less likely to face voting barriers compared to respondents with lower self-reported incomes. The absence of voter registration emerged as a significant and noteworthy impediment for those with lower incomes, potentially due to the limited time available to them to take off from work for the registration process.
+![](https://github.com/hamza6khan/voter-data-analysis/blob/main/barrier_inc_level.jpg)
+
+![](https://github.com/hamza6khan/voter-data-analysis/blob/main/dist_no_vote.jpg)
